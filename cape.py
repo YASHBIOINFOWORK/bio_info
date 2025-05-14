@@ -125,8 +125,8 @@ def display_molecule_3d(sdf_content):
     viewer.addModel(sdf_str, 'sdf')
     viewer.setStyle({'stick': {}})
     viewer.zoomTo()
-    html = viewer.render_html()  # Corrected line
-    st.components.v1.html(html, height=400)
+    html = viewer.render_html()
+    st.components.v1.html(html.encode('utf-8').decode('utf-8'), height=400)
 
 if st.button("Search", key="pubchem_search_button"):
     if search_query:
