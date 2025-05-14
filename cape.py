@@ -260,7 +260,7 @@ elif section == "ChEMBL Drug Search":
     @st.cache_data
     def search_chembl(drug_name):
         molecule = new_client.molecule
-        results = molecule.filter(max_phase=4, pref_name__icontains=drug_name).only(['molecule_chembl_id', 'pref_name', 'max_phase'])
+        results = molecule.filter(max_phase=4, pref_name__icontains=drug_name).only(['molecule_chembl_id', 'pref_name', 'max_phase', 'therapeutic_flag', 'molecule_type'])
         return pd.DataFrame(results)
 
     if st.button("Search", key="chembl_search_button"):
@@ -270,21 +270,31 @@ elif section == "ChEMBL Drug Search":
             if not results_df.empty:
                 st.success(f"Found {len(results_df)} FDA approved drug(s) containing '{drug_name}':")
 
-                # Visualization (Example - Bar Chart of Max Phase)
+                st.subheader("Distribution of Molecule Types")
+                fig_type = px.bar(
+                    results_df,
+                    x='molecule_type',
+                    title="Molecule Types of Found Drugs"
+                )
+                st.plotly_chart(fig_type)
+
+                st.subheader("Distribution of Drug Development Phases")
                 fig_phase = px.histogram(
                     results_df,
                     x='max_phase',
-                    title="Distribution of Drug Development Phases"
+                    title="Drug Development Phases (All are Phase 4)"
                 )
                 st.plotly_chart(fig_phase)
 
-                # Display the table
+                st.subheader("Drug Information")
                 st.dataframe(results_df)
 
                 for index, row in results_df.iterrows():
-                    st.subheader(f"ChEMBL ID: {row['molecule_chembl_id']}")
-                    st.write(f"**Preferred Name:** {row['pref_name']}")
-                    st.write(f"**Highest Phase:** {row['max_phase']}")
+                    st.markdown(f"**ChEMBL ID:** {row['molecule_chembl_id']}")
+                    st.markdown(f"**Preferred Name:** {row['pref_name']}")
+                    st.markdown(f"**Highest Phase:** {row['max_phase']}")
+                    st.markdown(f"**Therapeutic Flag:** {row['therapeutic_flag']}")
+                    st.markdown(f"**Molecule Type:** {row['molecule_type']}")
                     st.markdown("---")
             else:
                 st.warning(f"No FDA approved drugs found containing '{drug_name}'.")
