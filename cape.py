@@ -110,11 +110,11 @@ if section == "Protein Neighbors":
     distance = st.number_input("Distance cutoff (Å)", min_value=0.1, value=5.0, key="protein_distance_input")
 
     @st.cache_data
-    def get_coordinates_around(structure, distance=5.0):
+    def get_coordinates_around(_structure, distance=5.0):
         close_residues = []
         ligand_or_ion_residues = []
         ligand_names = {}
-        for model in structure:
+        for model in _structure:
             for chain in model.get_chains():
                 for residue in chain.get_residues():
                     if residue.id[0] != ' ':
@@ -123,7 +123,7 @@ if section == "Protein Neighbors":
         if not ligand_or_ion_residues:
             st.warning("No ligands or ions found in the structure.")
             return pd.DataFrame()
-        for model in structure:
+        for model in _structure:
             for chain in model.get_chains():
                 for residue in chain.get_residues():
                     if residue.id[0] == ' ':
