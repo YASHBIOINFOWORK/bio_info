@@ -5,23 +5,43 @@ import pandas as pd
 import requests
 import py3Dmol
 from chembl_webresource_client.new_client import new_client
+import plotly.express as px  # For visualizations
 
-# Custom CSS for a moving molecule background
+# --- Custom CSS for MP4 Background and Styling ---
 st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXAxMWdwb2pidG91NHQ1aGFkdzRjaGp0aWwxdzhqZnd0MTU1dmxsYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IepJ9cVIR68GdZDgCl/giphy.gif");
-        background-size: cover;
-        background-repeat: repeat; /* You can change this to 'no-repeat' or other options */
-        background-attachment: fixed; /* Keeps the background fixed while scrolling */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+    .stApp video {
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .content {
+        position: relative;
+        z-index: 1;
+        background-color: rgba(244, 244, 244, 0.8);
+        padding: 20px;
     }
     h1, h2, h3 {
-        color: #336699; /* A nice blue */
+        color: #336699;
     }
     .stButton>button {
         color: white;
-        background-color: #007bff; /* Bootstrap primary blue */
+        background-color: #007bff;
         border: none;
         padding: 10px 24px;
         text-align: center;
@@ -43,59 +63,53 @@ st.markdown(
         border-radius: 5px;
         padding: 10px;
         background-color: white;
-        opacity: 0.9; /* Add a slight transparency to content for better background visibility */
-    }
-    .stWarning {
-        color: orange;
-        background-color: #fff3cd;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ffeeba;
         opacity: 0.9;
     }
-    .stSuccess {
-        color: green;
-        background-color: #d4edda;
+    .stWarning, .stSuccess, .stInfo {
+        opacity: 0.9;
         padding: 10px;
         border-radius: 5px;
-        border: 1px solid #c3e6cb;
-        opacity: 0.9;
-    }
-    .stInfo {
-        color: #0c5460;
-        background-color: #d1ecf1;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #bee5eb;
-        opacity: 0.9;
+        border: 1px solid #eee;
+        background-color: rgba(255, 255, 255, 0.8);
     }
     .sidebar .sidebar-content {
-        background-color: rgba(240, 240, 240, 0.9); /* Light gray sidebar with transparency */
+        background-color: rgba(240, 240, 240, 0.9);
         color: #333;
     }
     </style>
+    <div class="stApp">
+        <video autoplay loop muted>
+            <source src="YOUR_MP4_VIDEO_URL_HERE" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="content">
+        <h1 style="color:#336699;">Protein-Ligand Insight</h1>
+        <p>A tool for exploring protein-ligand interactions, PubChem compounds, and FDA-approved drugs in ChEMBL.</p>
+        <hr>
+    </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.title("Protein-Ligand Insight")
-st.markdown("A tool for exploring protein-ligand interactions, PubChem compounds, and FDA-approved drugs in ChEMBL.")
-st.markdown("---")
-
-# Sidebar for input controls
+# --- Sidebar Navigation ---
 with st.sidebar:
     st.header("Explore")
-    section = st.radio("Choose a section:", ("Protein Neighbors", "PubChem Explorer", "ChEMBL Drug Search"))
+    section = st.radio(
+        "Choose a section:",
+        ("Protein Neighbors", "PubChem Explorer", "ChEMBL Drug Search"),
+    )
     st.markdown("---")
     st.markdown("Developed with Streamlit")
 
-# Main area based on selection
+# --- Main Content Area ---
 if section == "Protein Neighbors":
     st.header("Protein Neighbors")
     st.markdown("Find coordinates of residues around ligands/ions in a protein PDB file.")
     protein_pdb_file = st.file_uploader("Upload protein PDB file", type="pdb", key="protein_file_uploader")
     distance = st.number_input("Distance cutoff (Å)", min_value=0.1, value=5.0, key="protein_distance_input")
 
+    @st.cache_data
     def get_coordinates_around(structure, distance=5.0):
         close_residues = []
         ligand_or_ion_residues = []
@@ -149,6 +163,20 @@ if section == "Protein Neighbors":
             df = get_coordinates_around(structure, distance)
             if not df.empty:
                 st.subheader(f"Residue coordinates within {distance} Å of ligand/ions:")
+
+                # Visualization (Example - 3D Scatter Plot)
+                fig = px.scatter_3d(
+                    df,
+                    x='x',
+                    y='y',
+                    z='z',
+                    color='residue_name',
+                    hover_data=['chain_id', 'residue_number', 'atom_name', 'ligand_ion_name'],
+                    title="3D View of Residues Around Ligand/Ion"
+                )
+                st.plotly_chart(fig)
+
+                # Display the table
                 st.dataframe(df)
             else:
                 st.warning(f"No ligands or ions found, or no residues within {distance} Å.")
@@ -160,6 +188,7 @@ elif section == "PubChem Explorer":
     st.markdown("Search PubChem for compounds, view their 3D structures, and download SDF files.")
     search_query = st.text_input("Enter compound name or PubChem CID:", key="pubchem_search_input")
 
+    @st.cache_data
     def search_pubchem(query):
         base_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"
         output = "cids/JSON"
@@ -176,6 +205,7 @@ elif section == "PubChem Explorer":
             st.error(f"Error searching PubChem: {e}")
             return []
 
+    @st.cache_resource
     def get_sdf_3d(cid):
         base_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/"
         output = "SDF"
@@ -227,27 +257,34 @@ elif section == "ChEMBL Drug Search":
     st.markdown("Search ChEMBL for FDA approved drugs.")
     drug_name = st.text_input("Enter drug name:", key="chembl_drug_name_input")
 
+    @st.cache_data
     def search_chembl(drug_name):
         molecule = new_client.molecule
-        results = molecule.filter(max_phase=4, pref_name__icontains=drug_name)
-        return results
+        results = molecule.filter(max_phase=4, pref_name__icontains=drug_name).only(['molecule_chembl_id', 'pref_name', 'max_phase'])
+        return pd.DataFrame(results)
 
     if st.button("Search", key="chembl_search_button"):
         if drug_name:
             st.info(f"Searching ChEMBL for FDA approved drugs containing '{drug_name}'...")
-            results = list(search_chembl(drug_name))
-            if results:
-                st.success(f"Found {len(results)} FDA approved drug(s) containing '{drug_name}':")
-                for r in results:
-                    st.subheader(f"ChEMBL ID: {r['molecule_chembl_id']}")
-                    st.write(f"**Preferred Name:** {r['pref_name']}")
-                    synonyms = r.get('molecule_synonyms')
-                    if synonyms:
-                        string_synonyms = [syn['synonym'] for syn in synonyms if isinstance(syn, dict) and 'synonym' in syn and isinstance(syn['synonym'], str)]
-                        st.write(f"**Synonyms:** {', '.join(string_synonyms) if string_synonyms else 'N/A'}")
-                    else:
-                        st.write("**Synonyms:** N/A")
-                    st.write(f"**Highest Phase:** {r['max_phase']}")
+            results_df = search_chembl(drug_name)
+            if not results_df.empty:
+                st.success(f"Found {len(results_df)} FDA approved drug(s) containing '{drug_name}':")
+
+                # Visualization (Example - Bar Chart of Max Phase)
+                fig_phase = px.histogram(
+                    results_df,
+                    x='max_phase',
+                    title="Distribution of Drug Development Phases"
+                )
+                st.plotly_chart(fig_phase)
+
+                # Display the table
+                st.dataframe(results_df)
+
+                for index, row in results_df.iterrows():
+                    st.subheader(f"ChEMBL ID: {row['molecule_chembl_id']}")
+                    st.write(f"**Preferred Name:** {row['pref_name']}")
+                    st.write(f"**Highest Phase:** {row['max_phase']}")
                     st.markdown("---")
             else:
                 st.warning(f"No FDA approved drugs found containing '{drug_name}'.")
