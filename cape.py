@@ -120,13 +120,14 @@ def get_sdf_3d(cid):
         return None
 
 def display_molecule_3d(sdf_content):
+    """Displays a 3D molecule using py3Dmol."""
     sdf_str = sdf_content.decode('utf-8')
     viewer = py3Dmol.view(width=400, height=400)
     viewer.addModel(sdf_str, 'sdf')
     viewer.setStyle({'stick': {}})
     viewer.zoomTo()
-    html = viewer.render_html()
-    st.components.v1.html(html.encode('utf-8').decode('utf-8'), height=400)
+    html = viewer.render_html().strip()
+    st.components.v1.html(f"<div>{html}</div>", height=400)
 
 if st.button("Search", key="pubchem_search_button"):
     if search_query:
