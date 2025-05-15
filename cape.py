@@ -356,29 +356,7 @@ elif section == "About":
         - ChEMBL Web Resource Client: For interacting with the ChEMBL database.
         - Plotly Express: For creating interactive visualizations.
 
-        **Acknowledgements:**
-
-        We would like to acknowledge the following resources and libraries that
-        have been instrumental in the development of this application:
-
-        - **Streamlit:** For providing the fantastic framework for building interactive
-          web applications in Python.
-        - **Biopython:** For the essential tools for working with biological data,
-          especially PDB file parsing.
-        - **Pandas:** For the powerful data manipulation and analysis capabilities.
-        - **Requests:** For enabling seamless communication with web APIs.
-        - **py3Dmol:** For the excellent library for rendering 3D molecular structures
-          directly in the browser.
-        - **ChEMBL Web Resource Client:** For providing programmatic access to the
-          valuable ChEMBL database.
-        - **Plotly Express:** For the intuitive and expressive library for creating
-          interactive plots and visualizations.
-        - **PubChem:** For the comprehensive database of chemical molecules and their
-          properties.
-        - **ChEMBL:** For the extensive database of bioactive molecules.
-
-        We also appreciate any feedback and contributions from the community.
-
+      
         **Developed By:** [Yash Birjajdar/DESPU]
         **Contact:** [3522411027@despu.edu.in/Link]
         **Version:** [Streamlit v1.45.1]
