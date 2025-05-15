@@ -262,8 +262,8 @@ elif section == "PubChem Explorer":
                         )
                     else:
                         st.warning(f"No 3D structure available for CID: {selected_cid}")
-            else:
-                st.warning(f"No compounds found matching '{search_query}'")
+                else:
+                    st.warning(f"No compounds found matching '{search_query}'")
         else:
             st.warning("Please enter a compound name or CID to search.")
 
@@ -356,7 +356,14 @@ elif section == "About":
         - ChEMBL Web Resource Client: For interacting with the ChEMBL database.
         - Plotly Express: For creating interactive visualizations.
 
-      
+        **Acknowledgements:**
+
+        This project's successful completion owes much to the collaborative spirit and support I received.
+        I am deeply indebted to Dr. Kushagra Kashyap, for his invaluable mentorship, constructive feedback,
+        and ongoing motivation. His expertise in bioinformatics was essential to the development of this study.
+        I also acknowledge and appreciate the stimulating academic environment and helpful discussions
+        provided by the faculty and my fellow students in the Department of Bioinformatics.
+
         **Developed By:** [Yash Birjajdar/DESPU]
         **Contact:** [3522411027@despu.edu.in/Link]
         **Version:** [Streamlit v1.45.1]
