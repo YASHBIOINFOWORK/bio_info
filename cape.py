@@ -97,10 +97,25 @@ with st.sidebar:
     st.header("Explore")
     section = st.radio(
         "Choose a section:",
-        ("Protein Neighbors", "PubChem Explorer", "ChEMBL Drug Search"),
+        ("Protein Neighbors", "PubChem Explorer", "ChEMBL Drug Search", "About")
     )
     st.markdown("---")
     st.markdown("Developed with Streamlit")
+
+    st.sidebar.header("About This App")
+    st.sidebar.info(
+        """
+        This Streamlit application, Protein-Ligand Insight, is designed to help
+        users explore various aspects of protein-ligand interactions and drug discovery.
+
+        **Key Features:**
+        - **Protein Neighbors:** Analyze residues around ligands in PDB files.
+        - **PubChem Explorer:** Search and visualize 3D structures of compounds.
+        - **ChEMBL Drug Search:** Find FDA-approved drugs using ChEMBL data.
+        """
+    )
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("Developed with Streamlit")
 
 # --- Main Content Area ---
 if section == "Protein Neighbors":
@@ -300,3 +315,63 @@ elif section == "ChEMBL Drug Search":
                 st.warning(f"No FDA approved drugs found containing '{drug_name}'.")
         else:
             st.warning("Please enter a drug name to search.")
+
+elif section == "About":
+    st.header("About Protein-Ligand Insight")
+    st.markdown(
+        """
+        Welcome to Protein-Ligand Insight! This application provides a suite of tools
+        for researchers and enthusiasts interested in the world of biomolecules and drug discovery.
+
+        **Our Mission:**
+        To provide an intuitive and informative platform for exploring the interactions
+        between proteins and small molecules, as well as accessing valuable information
+        about chemical compounds and approved drugs.
+
+        **Detailed Features:**
+
+        **Protein Neighbors:**
+        - Upload your own Protein Data Bank (PDB) files.
+        - Specify a distance cutoff to identify amino acid residues in the vicinity of
+          ligands or ions within the protein structure.
+        - Visualize the spatial arrangement of these neighboring residues in 3D.
+        - Download the list of neighboring residues and their coordinates.
+
+        **PubChem Explorer:**
+        - Search the vast PubChem database by compound name or Chemical Identifier (CID).
+        - View interactive 3D structures of retrieved compounds.
+        - Download the 3D structural data in SDF format.
+
+        **ChEMBL Drug Search:**
+        - Explore FDA-approved drugs using the ChEMBL database.
+        - Search for drugs by name and view their development phase and other relevant information.
+        - Visualize the types of molecules found in your search.
+
+        **Technology Stack:**
+        - Streamlit: For creating the interactive web application.
+        - Biopython: For parsing and analyzing PDB files.
+        - Pandas: For data manipulation and analysis.
+        - Requests: For making HTTP requests to external APIs (PubChem).
+        - py3Dmol: For rendering 3D molecular structures.
+        - ChEMBL Web Resource Client: For interacting with the ChEMBL database.
+        - Plotly Express: For creating interactive visualizations.
+
+        **Acknowledgements:**
+
+        This project's successful completion owes much to the collaborative spirit and support I
+    received. I am deeply indebted to Dr. Kushagra Kashyap, for his invaluable mentorship, constructive feedback, and ongoing
+    motivation. His expertise in bioinformatics was essential to the development of this work. I
+    also acknowledge and appreciate the stimulating academic environment and helpful
+    discussions provided by the faculty and my fellow students in the Department of
+    Bioinformatics.
+        **Developed By:** [Yash Birjajdar/DESPU]
+        **Contact:** [3522411027@despu.edu.in/Link]
+        **Version:** [Streamlit v1.45.1]
+        """
+    )
+    st.markdown("---")
+    st.markdown(
+        """
+        **GitHub Profile:** [https://github.com/YASHBIOINFOWORK/bio_info.git]
+        """
+    )
