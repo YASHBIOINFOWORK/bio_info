@@ -266,23 +266,20 @@ elif section == "About":
         about chemical compounds and approved drugs.
 
         **Key Features:**
+        """
+    )
+    
+    features = [
+        "Protein Neighbors: Upload your own Protein Data Bank (PDB) files. Specify a distance cutoff to identify amino acid residues in the vicinity of ligands or ions within the protein structure. Visualize the spatial arrangement of these neighboring residues in 3D. Download the list of neighboring residues and their coordinates.",
+        "PubChem Explorer: Search the vast PubChem database by compound name or Chemical Identifier (CID). View interactive 3D structures of retrieved compounds. Download the 3D structural data in SDF format.",
+        "ChEMBL Drug Search: Explore FDA-approved drugs using the ChEMBL database. Search for drugs by name and view their development phase and other relevant information. Visualize the types of molecules found in your search.",
+    ]
+    
+    for feature in features:
+        st.markdown(f"- {feature}")
 
-        **Protein Neighbors:**
-        - Upload your own Protein Data Bank (PDB) files.
-        - Specify a distance cutoff to identify amino acid residues in the vicinity of
-          ligands or ions within the protein structure.
-        - Visualize the spatial arrangement of these neighboring residues in 3D.
-        - Download the list of neighboring residues and their coordinates.
-
-        **PubChem Explorer:**
-        - Search the vast PubChem database by compound name or Chemical Identifier (CID).
-        - View interactive 3D structures of retrieved compounds.
-        - Download the 3D structural data in SDF format.
-
-        **ChEMBL Drug Search:**
-        - Explore FDA-approved drugs using the ChEMBL database.
-        - Search for drugs by name and view their development phase and other relevant information.
-        - Visualize the types of molecules found in your search.
+    st.markdown(
+        """
 
         **Technology Stack:**
         - Streamlit: For creating the interactive web application.
